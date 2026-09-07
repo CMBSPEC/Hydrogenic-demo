@@ -424,11 +424,8 @@ int calc_spline_coeffies_JC(int nxi, const double *za, const double *ya, string 
     {
         strvec.push_back("");
 
-        gsl_interp_accel *acc;
-        gsl_spline *spline;
-
-        accvec.push_back(acc);
-        splinevec.push_back(spline);
+        accvec.push_back(nullptr);
+        splinevec.push_back(nullptr);
 
         allocvec.push_back(1);
         element=allocvec.size()-1;
