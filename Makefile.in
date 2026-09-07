@@ -43,12 +43,17 @@ TOOLS_OBJS = $(BUILD_DIR)/Tools/Simple_routines/routines.o \
 OBJS = $(BUILD_DIR)/main.o $(HYDROGENIC_OBJS) $(TOOLS_OBJS)
 DEPS = $(OBJS:.o=.d)
 
-.PHONY: all run clean
+.PHONY: all run update-modules clean
 
 all: $(TARGET)
 
 run: $(TARGET)
 	./$(TARGET)
+
+update-modules:
+	git submodule sync --recursive
+	git submodule update --init --remote --merge --recursive
+	git submodule status --recursive
 
 $(TARGET): $(OBJS)
 	@echo "Linking $@"
