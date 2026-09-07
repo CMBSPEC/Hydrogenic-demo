@@ -1,0 +1,8 @@
+build/
+hydrogenic_atom_demo
+*.o
+*.d
+.DS_Store
+.ipynb_checkpoints/
+__pycache__/
+*.pyc
