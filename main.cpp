@@ -1,3 +1,15 @@
+//============================================================================================
+//
+// Simple demo for use of Atom class [07/09/2026 JC+Codex]. The Hydrogenic Atom setup was
+// developed to solve the cosmological recombination problem [1], with the requirement to go to
+// large principal quantum numbers including dipole and quadrupole transitions [2, 3].
+//
+// References:
+// [1] https://ui.adsabs.harvard.edu/abs/2011MNRAS.412..748C/abstract
+// [2] https://ui.adsabs.harvard.edu/abs/2007MNRAS.374.1310C/abstract
+// [3] https://ui.adsabs.harvard.edu/abs/2016MNRAS.456.3494C/abstract
+//
+//============================================================================================
 #include <iomanip>
 #include <iostream>
 #include <string>
@@ -13,6 +25,16 @@ using namespace std;
 
 namespace
 {
+    void print_atom_summary(const Atom &atom, const string &label)
+    {
+        cout << label << '\n';
+        cout << "  Z=" << atom.Get_Z()
+             << "  Np=" << atom.Get_Np()
+             << "  shells=" << atom.Get_nShells()
+             << "  levels=" << atom.Get_total_number_of_Levels()
+             << '\n';
+    }
+
     void print_level_summary(const Atom &atom, unsigned int n, unsigned int l)
     {
         const Electron_Level &level = atom.Level(n, l);
@@ -65,30 +87,28 @@ namespace
     }
 }
 
+//============================================================================================
 int main()
 {
-    constexpr int n_shells = 5;
-    constexpr int nuclear_charge = 1;
-    constexpr double nucleus_mass_in_mp = 1.0;
     constexpr bool include_quadrupole_lines = true;
-    constexpr int recombination_mode = 1;
     constexpr int message_level = -1;
 
-    Atom hydrogen(n_shells,
-                  nuclear_charge,
-                  nucleus_mass_in_mp,
+    constexpr int hydrogen_shells = 5;
+    constexpr int hydrogen_nuclear_charge = 1;
+    constexpr double hydrogen_nucleus_mass_in_mp = 1.0;
+    constexpr int hydrogen_recombination_mode = 1;
+
+    Atom hydrogen(hydrogen_shells,
+                  hydrogen_nuclear_charge,
+                  hydrogen_nucleus_mass_in_mp,
                   include_quadrupole_lines,
-                  recombination_mode,
+                  hydrogen_recombination_mode,
                   message_level);
 
     cout << scientific << setprecision(6);
 
     cout << "Hydrogenic Atom demo using Hydrogenic.vX" << '\n';
-    cout << "  Z=" << hydrogen.Get_Z()
-         << "  Np=" << hydrogen.Get_Np()
-         << "  shells=" << hydrogen.Get_nShells()
-         << "  levels=" << hydrogen.Get_total_number_of_Levels()
-         << '\n';
+    print_atom_summary(hydrogen, "Hydrogen example");
 
     cout << "\nSelected levels" << '\n';
     print_level_summary(hydrogen, 1, 0);
@@ -119,5 +139,37 @@ int main()
 
     hydrogen.reset_atom();
 
+    constexpr int oxygen_shells = 30;
+    constexpr int oxygen_nuclear_charge = 8;
+    constexpr double oxygen_nucleus_mass_in_mp = 15.879;
+    constexpr int oxygen_recombination_mode = 1;
+
+    Atom oxygen(oxygen_shells,
+                oxygen_nuclear_charge,
+                oxygen_nucleus_mass_in_mp,
+                include_quadrupole_lines,
+                oxygen_recombination_mode,
+                message_level);
+
+    cout << "\nHydrogenic oxygen example (O VIII)" << '\n';
+    print_atom_summary(oxygen, "Oxygen example");
+
+    cout << "\nSelected oxygen levels" << '\n';
+    print_level_summary(oxygen, 1, 0);
+    print_level_summary(oxygen, 2, 1);
+    print_level_summary(oxygen, 10, 9);
+    print_level_summary(oxygen, 30, 29);
+
+    cout << "\nSelected oxygen bound-bound transitions" << '\n';
+    print_transition(oxygen, 2, 1, 1, 0, "O VIII Ly-alpha 2p -> 1s E1");
+    print_transition(oxygen, 3, 2, 1, 0, "O VIII 3d -> 1s E2");
+    print_transition(oxygen, 30, 29, 29, 28, "O VIII high-n (30, 29) -> (29, 28) E1");
+
+    cout << "\nOxygen photoionization cross sections" << '\n';
+    print_photoionization_table(oxygen, 1, 0, {1.001, 1.1, 2.0});
+    print_photoionization_table(oxygen, 10, 9, {1.001, 1.5, 3.0});
+
     return 0;
 }
+//============================================================================================
+//============================================================================================
