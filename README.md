@@ -36,6 +36,10 @@ The current `main.cpp` includes two examples:
 
 The hydrogenic atom setup was developed for detailed calculations of cosmological recombination. This requires multi-shell hydrogenic atoms with resolved angular momentum sub-states, dipole transitions, quadrupole transitions, photoionization cross sections, and recombination coefficients. The C++ example in `main.cpp` cites the main background papers for this use case.
 
+The physics model is the standard one-electron Coulomb problem for a nucleus of charge `Z`, with reduced-mass corrections included in the Rydberg scaling. Radiative quantities are evaluated perturbatively in the Born approximation: unperturbed nonrelativistic Coulomb bound and continuum states are coupled by the leading electromagnetic multipole operators. This makes the routines appropriate for hydrogenic ions such as H I and O VIII, but not for detailed multi-electron structure.
+
+The bound-bound dipole rates and oscillator strengths use the Storey & Hummer recurrence relations for reduced radial matrix elements. The implementation reorganizes these recursions for numerical stability at large `n`, using root-rescaled starting values and delayed products so that very small radial integrals are not repeatedly multiplied into underflow or cancellation. The bound-free photoionization cross sections and Gaunt factors use the corresponding Storey & Hummer bound-free recurrences; the Kramers reference cross section follows Karzas & Latter. The electric quadrupole routines combine the same hydrogenic radial machinery with quadrupole matrix-element relations from Hey and the recombination application discussed by Grin & Hirata.
+
 ## Dependencies
 
 The C++ build expects:
@@ -220,7 +224,7 @@ Documentation/Hydrogenic_cpp_Documentation.tex
 The PDF can be regenerated from this README with Pandoc and Typst:
 
 ```sh
-pandoc README.md --from gfm --pdf-engine=typst --output Documentation/Hydrogenic_cpp_Documentation.pdf
+pandoc README.md --from gfm --pdf-engine=typst --metadata-file=Documentation/pdf_metadata.yaml --output Documentation/Hydrogenic_cpp_Documentation.pdf
 ```
 
 If a LaTeX installation is available, the TeX source can be edited and compiled by hand:
@@ -237,3 +241,11 @@ pdflatex Hydrogenic_cpp_Documentation.tex
 [2] J. Chluba, J. A. Rubino-Martin, and R. A. Sunyaev, "Cosmological hydrogen recombination: populations of the high level sub-states", MNRAS 374, 1310, 2007. <https://ui.adsabs.harvard.edu/abs/2007MNRAS.374.1310C/abstract>
 
 [3] J. Chluba and Y. Ali-Haimoud, "CosmoSpec: Fast and detailed computation of the cosmological recombination radiation from hydrogen and helium", MNRAS 456, 3494, 2016. <https://ui.adsabs.harvard.edu/abs/2016MNRAS.456.3494C/abstract>
+
+[4] P. J. Storey and D. G. Hummer, "Fast computer evaluation of radiative properties of hydrogenic systems", Computer Physics Communications 66, 129, 1991. <https://ui.adsabs.harvard.edu/abs/1991CoPhC..66..129S/abstract>
+
+[5] W. J. Karzas and R. Latter, "Electron Radiative Transitions in a Coulomb Field", ApJS 6, 167, 1961. <https://ui.adsabs.harvard.edu/abs/1961ApJS....6..167K/abstract>
+
+[6] J. D. Hey, "On the determination of radial matrix elements for high-n transitions in hydrogenic atoms and ions", J. Phys. B: At. Mol. Opt. Phys. 39, 2641, 2006. <https://doi.org/10.1088/0953-4075/39/12/003>
+
+[7] D. Grin and C. M. Hirata, "Cosmological hydrogen recombination: The effect of extremely high-n states", Phys. Rev. D 81, 083005, 2010. <https://arxiv.org/abs/0911.1359>
