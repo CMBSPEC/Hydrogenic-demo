@@ -29,10 +29,10 @@ classifiers = [
 
 [project.optional-dependencies]
 notebooks = [
-    "jupyter>=1.0",
+    "jupyterlab>=4.0",
+    "notebook>=7.0",
     "matplotlib>=3.7"
 ]
 
 [tool.setuptools.packages.find]
 where = ["src"]
-

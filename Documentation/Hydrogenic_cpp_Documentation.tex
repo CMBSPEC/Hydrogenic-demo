@@ -66,25 +66,58 @@ brew install gcc gsl boost
 
 \begin{lstlisting}[language=bash]
 make
+make help
+make h
+make usage
+make list
+make targets
 make run
 make clean
 make update-modules
 \end{lstlisting}
 
-The executable is written to \texttt{./hydrogenic\_atom\_demo}; intermediate build products are written under \texttt{./build/}.
+\texttt{make --help} and \texttt{make -h} are handled by GNU make itself; use \texttt{make help} for project-specific help.
 
-\section{Python install and use}
+The executable is written to \texttt{./hydrogenic\_atom\_demo}; intermediate C++ build products are written under \texttt{./build/}. Python extension build products are written under \texttt{python/build/} and \texttt{python/src/hydrogenic/}. \texttt{make clean} removes both the C++ and Python build products.
 
-From the repository root:
+\section{Python package and Jupyter}
+
+Use \texttt{python3}, not \texttt{python}, from the repository root. Since this repository has a \texttt{python/} folder, some shell setups can otherwise resolve \texttt{python} incorrectly and report \texttt{Permission denied}.
+
+To build the Python extension and run the notebook with existing Homebrew/JupyterLab installations, you need \texttt{numpy}, \texttt{matplotlib}, \texttt{jupyterlab} or \texttt{notebook}, build-time \texttt{setuptools} and \texttt{pybind11}, and the compiled dependencies GCC with OpenMP, GSL, and Boost headers.
+
+On macOS with Homebrew:
 
 \begin{lstlisting}[language=bash]
-python -m pip install ./python
+brew install gcc gsl boost python-setuptools pybind11 numpy matplotlib jupyterlab
 \end{lstlisting}
 
-For editable development with notebook dependencies:
+Build the local Python extension:
 
 \begin{lstlisting}[language=bash]
-python -m pip install -e "./python[notebooks]"
+make python-build
+make python
+make py
+\end{lstlisting}
+
+Open the demo notebook:
+
+\begin{lstlisting}[language=bash]
+make run-jupyter
+\end{lstlisting}
+
+\texttt{make run-jupyter} runs \texttt{make python-build} first, then opens the notebook with an available Jupyter command (\texttt{jupyter lab}, \texttt{jupyter-lab}, or \texttt{jupyter-notebook}) and sets \texttt{PYTHONPATH} to include \texttt{python/src}. This lets the notebook import the local \texttt{hydrogenic} extension without installing it into JupyterLab's private Python environment.
+
+The Makefile workflow avoids installing the package into your system Python. If you deliberately want a pip install into a Homebrew-managed Python, Homebrew may require:
+
+\begin{lstlisting}[language=bash]
+python3 -m pip install --user --break-system-packages ./python
+\end{lstlisting}
+
+Shortcut from the repository root:
+
+\begin{lstlisting}[language=bash]
+make run-jupyter
 \end{lstlisting}
 
 If needed, override compiler and dependency paths explicitly:
@@ -94,7 +127,7 @@ CXX=/opt/homebrew/bin/g++-16 \
 GSL_INC_PATH=/opt/homebrew/include \
 GSL_LIB_PATH=/opt/homebrew/lib \
 BOOST_INC_PATH=/opt/homebrew/include \
-python -m pip install ./python
+python3 -m pip install ./python
 \end{lstlisting}
 
 Basic Python use:
@@ -129,4 +162,3 @@ The notebook examples live in \texttt{python/notebooks/}. They illustrate the sa
 \end{enumerate}
 
 \end{document}
-

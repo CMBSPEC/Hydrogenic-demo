@@ -75,6 +75,23 @@ From the workspace root:
 make
 ```
 
+List available Makefile targets:
+
+```sh
+make help
+```
+
+Aliases are also available:
+
+```sh
+make h
+make usage
+make list
+make targets
+```
+
+`make --help` and `make -h` are handled by GNU make itself; use `make help` for project-specific help.
+
 Run the demo:
 
 ```sh
@@ -105,24 +122,52 @@ The executable is written to:
 ./hydrogenic_atom_demo
 ```
 
-Intermediate object and dependency files are written under:
+Intermediate C++ object and dependency files are written under:
 
 ```sh
 ./build/
 ```
 
-## Install the Python package
+Python extension build products are written under `python/build/` and `python/src/hydrogenic/`. `make clean` removes both the C++ and Python build products.
 
-From the repository root:
+## Python package and Jupyter
+
+Use `python3`, not `python`, from the repository root. Since this repository has a `python/` folder, some shell setups can otherwise resolve `python` incorrectly and report `Permission denied`.
+
+To build the Python extension and run the notebook with existing Homebrew/JupyterLab installations, you need:
+
+- `numpy`;
+- `matplotlib`;
+- `jupyterlab` or `notebook`;
+- build-time `setuptools` and `pybind11`;
+- compiled dependencies: GCC with OpenMP, GSL, and Boost headers.
+
+On macOS with Homebrew:
 
 ```sh
-python -m pip install ./python
+brew install gcc gsl boost python-setuptools pybind11 numpy matplotlib jupyterlab
 ```
 
-For editable development with notebook dependencies:
+Build the local Python extension:
 
 ```sh
-python -m pip install -e "./python[notebooks]"
+make python-build
+make python
+make py
+```
+
+Open the demo notebook:
+
+```sh
+make run-jupyter
+```
+
+`make run-jupyter` runs `make python-build` first, then opens the notebook with an available Jupyter command (`jupyter lab`, `jupyter-lab`, or `jupyter-notebook`) and sets `PYTHONPATH` to include `python/src`. This lets the notebook import the local `hydrogenic` extension without installing it into JupyterLab's private Python environment.
+
+The Makefile workflow avoids installing the package into your system Python. If you deliberately want a pip install into a Homebrew-managed Python, Homebrew may require:
+
+```sh
+python3 -m pip install --user --break-system-packages ./python
 ```
 
 If needed, override the compiler and dependency paths explicitly:
@@ -132,7 +177,7 @@ CXX=/opt/homebrew/bin/g++-16 \
 GSL_INC_PATH=/opt/homebrew/include \
 GSL_LIB_PATH=/opt/homebrew/lib \
 BOOST_INC_PATH=/opt/homebrew/include \
-python -m pip install ./python
+python3 -m pip install ./python
 ```
 
 ## Use from Python
@@ -192,4 +237,3 @@ pdflatex Hydrogenic_cpp_Documentation.tex
 [2] J. Chluba, J. A. Rubino-Martin, and R. A. Sunyaev, "Cosmological hydrogen recombination: populations of the high level sub-states", MNRAS 374, 1310, 2007. <https://ui.adsabs.harvard.edu/abs/2007MNRAS.374.1310C/abstract>
 
 [3] J. Chluba and Y. Ali-Haimoud, "CosmoSpec: Fast and detailed computation of the cosmological recombination radiation from hydrogen and helium", MNRAS 456, 3494, 2016. <https://ui.adsabs.harvard.edu/abs/2016MNRAS.456.3494C/abstract>
-

@@ -94,7 +94,6 @@ class BuildExt(build_ext):
                 "-std=c++17",
                 "-O2",
                 "-Wall",
-                "-pedantic",
                 "-pthread",
                 "-fopenmp",
                 "-DOPENMP_ACTIVATED",
