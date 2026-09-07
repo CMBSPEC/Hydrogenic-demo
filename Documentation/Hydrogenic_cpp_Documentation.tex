@@ -1,0 +1,132 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{longtable}
+\usepackage{booktabs}
+
+\lstset{
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  columns=fullflexible
+}
+
+\title{Hydrogenic-demo Documentation}
+\author{Hydrogenic-demo contributors}
+\date{September 2026}
+
+\begin{document}
+\maketitle
+
+\section{Overview}
+
+Hydrogenic-demo provides a compact C++ example for hydrogenic atom calculations, together with a Python interface for interactive work and notebook-based demonstrations. The C++ code builds the \texttt{hydrogenic\_atom\_demo} executable and exercises the routines in \texttt{Hydrogenic.vX} together with numerical utilities from \texttt{Tools}.
+
+\section{Project layout}
+
+\begin{longtable}{p{0.34\linewidth}p{0.58\linewidth}}
+\toprule
+Path & Purpose \\
+\midrule
+\texttt{main.cpp} & Example program that constructs hydrogenic atoms and prints representative atomic data. \\
+\texttt{Hydrogenic.vX/Atom.*} & Core \texttt{Atom}, \texttt{Atomic\_Shell}, \texttt{Electron\_Level}, and \texttt{Gas\_of\_Atoms} classes. \\
+\texttt{Hydrogenic.vX/Oscillator\_strength.*} & Bound-bound oscillator strength and transition support. \\
+\texttt{Hydrogenic.vX/Photoionization\_cross\_section.*} & Photoionization cross sections and Gaunt factors. \\
+\texttt{Hydrogenic.vX/Quadrupole\_lines\_HI.*} & Electric quadrupole line rates for hydrogenic atoms. \\
+\texttt{Hydrogenic.vX/Rec\_Phot\_BB.*} and \texttt{Recombination\_Integrals.*} & Recombination and photon interaction helpers. \\
+\texttt{Tools/} & Shared constants, integration routines, line profiles, and simple numerical helpers. \\
+\texttt{python/} & Installable Python package and Jupyter notebook examples. \\
+\texttt{Documentation/} & PDF documentation and editable TeX source. \\
+\texttt{Makefile} and \texttt{Makefile.in} & Build entry points for the C++ demo executable. \\
+\bottomrule
+\end{longtable}
+
+\section{C++ example}
+
+The demo constructs hydrogenic atoms with a selected number of complete shells. Each shell contains angular momentum levels with \texttt{l = 0 ... n - 1}. The code can report level degeneracies, ionization energies, ionization frequencies, total decay rates, lifetimes, selected bound-bound transition data, optional electric quadrupole transitions, photoionization cross sections, Gaunt factors, and simple rescaling behavior for the fine-structure constant and electron mass.
+
+The current \texttt{main.cpp} includes hydrogen with \texttt{Z = 1}, 5 shells, quadrupole lines enabled, and Storey-Hummer recombination interpolation enabled. It also includes hydrogenic oxygen, O VIII, with \texttt{Z = 8}, 30 shells, quadrupole lines enabled, and Storey-Hummer recombination interpolation enabled.
+
+\section{Scientific background}
+
+The hydrogenic atom setup was developed for detailed calculations of cosmological recombination. This requires multi-shell hydrogenic atoms with resolved angular momentum sub-states, dipole transitions, quadrupole transitions, photoionization cross sections, and recombination coefficients. The C++ example in \texttt{main.cpp} cites the main background papers for this use case.
+
+\section{Dependencies}
+
+The C++ build expects a C++17 compiler with OpenMP support, GSL headers and libraries, Boost headers, and GNU \texttt{make}. The Python package additionally uses Python 3.9 or newer, \texttt{pybind11}, and \texttt{numpy}; the notebook examples use \texttt{jupyter} and \texttt{matplotlib}.
+
+On macOS with Homebrew:
+
+\begin{lstlisting}[language=bash]
+brew install gcc gsl boost
+\end{lstlisting}
+
+\section{Build and run}
+
+\begin{lstlisting}[language=bash]
+make
+make run
+make clean
+make update-modules
+\end{lstlisting}
+
+The executable is written to \texttt{./hydrogenic\_atom\_demo}; intermediate build products are written under \texttt{./build/}.
+
+\section{Python install and use}
+
+From the repository root:
+
+\begin{lstlisting}[language=bash]
+python -m pip install ./python
+\end{lstlisting}
+
+For editable development with notebook dependencies:
+
+\begin{lstlisting}[language=bash]
+python -m pip install -e "./python[notebooks]"
+\end{lstlisting}
+
+If needed, override compiler and dependency paths explicitly:
+
+\begin{lstlisting}[language=bash]
+CXX=/opt/homebrew/bin/g++-16 \
+GSL_INC_PATH=/opt/homebrew/include \
+GSL_LIB_PATH=/opt/homebrew/lib \
+BOOST_INC_PATH=/opt/homebrew/include \
+python -m pip install ./python
+\end{lstlisting}
+
+Basic Python use:
+
+\begin{lstlisting}[language=Python]
+import numpy as np
+from hydrogenic import hydrogen, oxygen
+
+h = hydrogen(shells=5)
+print(h.level(2, 1))
+print(h.transition(2, 1, 1, 0))
+
+o = oxygen(shells=30)
+nu0 = o.level(1, 0)["ionization_frequency_hz"]
+nu = np.geomspace(1.001, 10.0, 100)*nu0
+data = o.photoionization(1, 0, nu)
+print(data["sigma_cm2"])
+\end{lstlisting}
+
+Photoionization cross sections require \texttt{recombination\_mode=1} or \texttt{recombination\_mode=2}; this is the default used by the Python convenience constructors.
+
+\section{Python notebooks}
+
+The notebook examples live in \texttt{python/notebooks/}. They illustrate the same routines from Python, including level data, line transitions, and photoionization cross-section plots for hydrogen and hydrogenic oxygen.
+
+\section{References}
+
+\begin{enumerate}
+\item J. Chluba and R. M. Thomas, ``Towards a complete treatment of the cosmological recombination problem'', MNRAS 412, 748, 2011. \url{https://ui.adsabs.harvard.edu/abs/2011MNRAS.412..748C/abstract}
+\item J. Chluba, J. A. Rubino-Martin, and R. A. Sunyaev, ``Cosmological hydrogen recombination: populations of the high level sub-states'', MNRAS 374, 1310, 2007. \url{https://ui.adsabs.harvard.edu/abs/2007MNRAS.374.1310C/abstract}
+\item J. Chluba and Y. Ali-Haimoud, ``CosmoSpec: Fast and detailed computation of the cosmological recombination radiation from hydrogen and helium'', MNRAS 456, 3494, 2016. \url{https://ui.adsabs.harvard.edu/abs/2016MNRAS.456.3494C/abstract}
+\end{enumerate}
+
+\end{document}
+

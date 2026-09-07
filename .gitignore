@@ -6,3 +6,15 @@ hydrogenic_atom_demo
 .ipynb_checkpoints/
 __pycache__/
 *.pyc
+*.so
+python/build/
+python/dist/
+python/*.egg-info/
+python/src/*.egg-info/
+python/src/hydrogenic/*.egg-info/
+python/.venv/
+*.xcworkspace/
+*.xcodeproj/
+xcuserdata/
+*.xcuserstate
+DerivedData/
