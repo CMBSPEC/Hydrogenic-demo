@@ -234,6 +234,12 @@ cd Documentation
 pdflatex Hydrogenic_cpp_Documentation.tex
 ```
 
+## Related Repositories
+
+- [Hydrogenic.vX](https://github.com/CMBSPEC/Hydrogenic.vX)
+- [Helium.vX](https://github.com/CMBSPEC/Helium.vX)
+- [Helium-demo](https://github.com/CMBSPEC/Helium-demo)
+
 ## References
 
 [1] J. Chluba and R. M. Thomas, "Towards a complete treatment of the cosmological recombination problem", MNRAS 412, 748, 2011. <https://ui.adsabs.harvard.edu/abs/2011MNRAS.412..748C/abstract>
