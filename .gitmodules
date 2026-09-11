@@ -1,4 +1,4 @@
 [submodule "Hydrogenic.vX"]
 	path = Hydrogenic.vX
-	url = git@github.com:CMBSPEC/Hydrogenic.vX.git
+	url = https://github.com/CMBSPEC/Hydrogenic.vX.git
 	branch = master

@@ -249,3 +249,5 @@ pdflatex Hydrogenic_cpp_Documentation.tex
 [6] J. D. Hey, "On the determination of radial matrix elements for high-n transitions in hydrogenic atoms and ions", J. Phys. B: At. Mol. Opt. Phys. 39, 2641, 2006. <https://doi.org/10.1088/0953-4075/39/12/003>
 
 [7] D. Grin and C. M. Hirata, "Cosmological hydrogen recombination: The effect of extremely high-n states", Phys. Rev. D 81, 083005, 2010. <https://arxiv.org/abs/0911.1359>
+
+These repositories were made available and documented with the help of Codex. The related release work was supported in part by a grant of access to OpenAI models through the ChatGPT for Academic Researchers program.
